@@ -43,17 +43,16 @@ public class UserMealsUtil {
 
         List<UserMealWithExceed> userMealWithExceed = new ArrayList<>();
         mealList.forEach(userMeal -> {
-            if (isBetween(userMeal.getLocalTime(), startTime, endTime)) {
-                userMealWithExceed.add(new UserMealWithExceed
-                        (userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), false));
-            }
             //Суммировние каллорий по ключу даты
             sumCaloriesForPerDay.merge(userMeal.getLocalDate(), userMeal.getCalories(), Integer::sum);
         });
 
-        //Создание результирующего листа с информацией о превышении и количеством каллорий
-        for (UserMealWithExceed item : userMealWithExceed) {
-            item.setExceed(sumCaloriesForPerDay.get(item.getLocalDate()) > caloriesPerDay);
+        for (UserMeal userMeal : mealList) {
+            if (isBetween(userMeal.getLocalTime(), startTime, endTime)) {
+                userMealWithExceed.add(new UserMealWithExceed
+                        (userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(),
+                                sumCaloriesForPerDay.get(userMeal.getLocalDate()) > caloriesPerDay));
+            }
         }
         return userMealWithExceed;
     }
