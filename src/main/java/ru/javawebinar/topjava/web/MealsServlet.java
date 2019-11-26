@@ -21,7 +21,7 @@ public class MealsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to servlet");
-        request.setAttribute("posts", getFilteredDefault());
+        request.setAttribute("meals", getFilteredDefault());
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
 
     }
