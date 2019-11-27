@@ -17,42 +17,41 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
-    private  static  List<Meal> meals = Arrays.asList(
-            new Meal(1,LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-            new Meal(2,LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-            new Meal(3,LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-            new Meal(4,LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-            new Meal(5,LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(6,LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
+    private final static List<Meal> MEALS = Arrays.asList(
+            new Meal(1, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+            new Meal(2, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+            new Meal(3, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+            new Meal(4, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+            new Meal(5, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+            new Meal(6, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
     );
-    private static LocalTime startTime = LocalTime.of(7, 0);
-    private static LocalTime endTime = LocalTime.of(12, 0);
+    private static final LocalTime START_TIME = LocalTime.of(7, 0);
+    private static final LocalTime END_TIME = LocalTime.of(12, 0);
     private static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
 
-        List<MealTo> mealsTo = getFiltered(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY);
+        List<MealTo> mealsTo = getFiltered(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY);
         mealsTo.forEach(System.out::println);
 
-        System.out.println(getFilteredByCycle(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY));
-        System.out.println(getFilteredByRecursion(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY));
-        System.out.println(getFilteredByExecutor(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY));
-        System.out.println(getFilteredByFlatMap(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY));
-        System.out.println(getFilteredByCollector(meals, startTime, endTime, DEFAULT_CALORIES_PER_DAY));
+        System.out.println(getFilteredByCycle(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY));
+        System.out.println(getFilteredByRecursion(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY));
+        System.out.println(getFilteredByExecutor(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY));
+        System.out.println(getFilteredByFlatMap(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY));
+        System.out.println(getFilteredByCollector(MEALS, START_TIME, END_TIME, DEFAULT_CALORIES_PER_DAY));
     }
 
-    public static List<MealTo> getFilteredDefault(){
-        return  getFiltered(meals, LocalTime.MIN, LocalTime.MAX, DEFAULT_CALORIES_PER_DAY);
+    public static List<MealTo> getFilteredDefault() {
+        return getFiltered(MEALS, LocalTime.MIN, LocalTime.MAX, DEFAULT_CALORIES_PER_DAY);
     }
 
 
-    public static List<MealTo> getFiltered(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    private static List<MealTo> getFiltered(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-//                      Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum)
                 );
         return meals.stream()
                 .filter(meal -> TimeUtil.isBetween(meal.getTime(), startTime, endTime))
@@ -91,38 +90,6 @@ public class MealsUtil {
         }
     }
 
-/*
-        private static List<MealTo> getFilteredByAtomic(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-            Map<LocalDate, Integer> caloriesSumByDate = new HashMap<>();
-            Map<LocalDate, AtomicBoolean> exceededMap = new HashMap<>();
-
-            List<MealTo> mealsTo = new ArrayList<>();
-            meals.forEach(meal -> {
-                AtomicBoolean wrapBoolean = exceededMap.computeIfAbsent(meal.getDate(), date -> new AtomicBoolean());
-                Integer dailyCalories = caloriesSumByDate.merge(meal.getDate(), meal.getCalories(), Integer::sum);
-                if (dailyCalories > caloriesPerDay) {
-                    wrapBoolean.set(true);
-                }
-                if (TimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
-                  mealsTo.add(createTo(meal, wrapBoolean));  // also change createWithExcess and MealTo.excess
-                }
-            });
-            return mealsTo;
-        }
-
-    private static List<MealTo> getFilteredByClosure(List<Meal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        final Map<LocalDate, Integer> caloriesSumByDate = new HashMap<>();
-        List<MealTo> mealsTo = new ArrayList<>();
-        mealList.forEach(meal -> {
-                    caloriesSumByDate.merge(meal.getDate(), meal.getCalories(), Integer::sum);
-                    if (TimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
-                        mealsTo.add(createTo(meal, () -> (caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))); // also change createWithExcess and MealTo.excess
-                    }
-                }
-        );
-        return mealsTo;
-    }
-*/
 
     private static List<MealTo> getFilteredByExecutor(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) throws InterruptedException, ExecutionException {
         Map<LocalDate, Integer> caloriesSumByDate = new HashMap<>();
@@ -191,6 +158,6 @@ public class MealsUtil {
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getId(),meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
