@@ -17,7 +17,6 @@
         <th>Дата</th>
         <th>Описание</th>
         <th>Каллории</th>
-        <th>Превышение</th>
     </tr>
 
     <c:forEach items="${meals}" var="item">
