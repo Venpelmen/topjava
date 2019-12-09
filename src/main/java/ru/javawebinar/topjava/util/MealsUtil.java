@@ -17,14 +17,14 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
-    private static List<Meal> meals = Collections.synchronizedList(Arrays.asList(
+    private static List<Meal> meals = Collections.synchronizedList(new LinkedList<Meal>(Arrays.asList(
             new Meal(1, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
             new Meal(2, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
             new Meal(3, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
             new Meal(4, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
             new Meal(5, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
             new Meal(6, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510))
-    );
+    ));
     private static final LocalTime START_TIME = LocalTime.of(7, 0);
     private static final LocalTime END_TIME = LocalTime.of(12, 0);
     private static final int DEFAULT_CALORIES_PER_DAY = 2000;
@@ -45,10 +45,6 @@ public class MealsUtil {
 
     public static List<MealTo> getFilteredDefault() {
         return getFiltered(meals, LocalTime.MIN, LocalTime.MAX, DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public static List<Meal> getMeals() {
-        return meals;
     }
 
     private static List<MealTo> getFiltered(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -162,5 +158,13 @@ public class MealsUtil {
 
     private static MealTo createTo(Meal meal, boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    public static void setMeals(List<Meal> meals) {
+        MealsUtil.meals = meals;
+    }
+
+    public static List<Meal> getMeals() {
+        return meals;
     }
 }
