@@ -14,7 +14,7 @@ public class MealDao implements MealManager {
 
     @Override
     public void delete(Integer id) {
-        getMeals().remove(getMeals().stream().filter(meal -> meal.getId()==id).findFirst().orElse(null));
+        getMeals().remove(getMeals().stream().filter(meal -> meal.getId() == id).findFirst().orElse(null));
 
     }
 
@@ -25,6 +25,7 @@ public class MealDao implements MealManager {
 
     @Override
     public void change(Meal meal) {
+        delete(meal.getId());
         getMeals().add(meal);
     }
 }

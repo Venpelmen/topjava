@@ -62,10 +62,9 @@ public class MealsServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         if (request.getParameter("method") != null) {
             if (request.getParameter("method").equals("insert")) {
-                mealDao.insert(new Meal(request.getParameterMap(),true));
-            }
-            else if(request.getParameter("method").equals("change")){
-                mealDao.change(new Meal(request.getParameterMap(),false));
+                mealDao.insert(new Meal(request.getParameterMap(), true));
+            } else if (request.getParameter("method").equals("change")) {
+                mealDao.change(new Meal(request.getParameterMap(), false));
             }
         }
         forward(request, response);

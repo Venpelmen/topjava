@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static jdk.nashorn.internal.objects.NativeArray.sort;
 
 public class MealsUtil {
     private static AtomicInteger lastId = new AtomicInteger(0);
@@ -46,7 +47,10 @@ public class MealsUtil {
     }
 
     public static List<MealTo> getFilteredDefault() {
-        return getFiltered(meals, LocalTime.MIN, LocalTime.MAX, DEFAULT_CALORIES_PER_DAY);
+
+        List<MealTo> filtered = getFiltered(meals, LocalTime.MIN, LocalTime.MAX, DEFAULT_CALORIES_PER_DAY);
+        Collections.sort(filtered, Comparator.comparingInt(MealTo::getId));
+        return filtered;
     }
 
     private static List<MealTo> getFiltered(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {

@@ -37,7 +37,7 @@
                 <td><input type="text" name="description" value="${item.getDescription()}"></td>
                 <td><input type="number" name="calories" value="${item.getCalories()}"></td>
                 <td>
-                   <td><input type="hidden" name="method" value="change">
+                <td><input type="hidden" name="method" value="change">
                     <button><input type="submit" value="Редактировать"/></button>
                 </td>
                 <td>

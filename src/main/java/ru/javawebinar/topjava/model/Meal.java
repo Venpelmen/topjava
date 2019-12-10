@@ -32,12 +32,11 @@ public class Meal {
         this.calories = calories;
     }
 
-    public Meal(Map<String, String[]> parameterMap,boolean incrementId ) {
+    public Meal(Map<String, String[]> parameterMap, boolean incrementId) {
         try {
-            if(incrementId) {
+            if (incrementId) {
                 this.id = getLastId();
-            }
-            else {
+            } else {
                 this.id = Integer.valueOf(parameterMap.get("id")[0]);
             }
             this.dateTime = LocalDateTime.parse(parameterMap.get("dateTime")[0]);
