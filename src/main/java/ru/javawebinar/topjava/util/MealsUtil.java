@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,13 +18,14 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
+    private static AtomicInteger lastId = new AtomicInteger(0);
     private static List<Meal> meals = Collections.synchronizedList(new LinkedList<Meal>(Arrays.asList(
-            new Meal(1, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-            new Meal(2, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-            new Meal(3, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-            new Meal(4, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-            new Meal(5, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(6, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510))
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+            new Meal(lastId.incrementAndGet(), LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510))
     ));
     private static final LocalTime START_TIME = LocalTime.of(7, 0);
     private static final LocalTime END_TIME = LocalTime.of(12, 0);
@@ -166,5 +168,9 @@ public class MealsUtil {
 
     public static List<Meal> getMeals() {
         return meals;
+    }
+
+    public static int getLastId() {
+        return lastId.incrementAndGet();
     }
 }
