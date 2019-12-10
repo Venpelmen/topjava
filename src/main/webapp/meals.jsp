@@ -20,7 +20,7 @@
         <th>Каллории</th>
     </tr>
     <form id="createMeal" method="post">
-        <td><input type="number" name="id" value=""></td>
+        <td><input type="hidden" name="id" value=""></td>
         <td><input type="datetime-local" name="dateTime" value=""></td>
         <td><input type="text" name="description" value=""></td>
         <td><input type="number" name="calories" value=""></td>
@@ -32,7 +32,7 @@
     <c:forEach items="${meals}" var="item">
         <form id="mealsTable" method="post">
             <tr bgcolor="${item.isExcess() ? 'INDIANRED' : 'LIME'}">
-                <td><input type="number" name="id" value="${item.getId()}"></td>
+                <td><input type="hidden" name="id" value="${item.getId()}"></td>
                 <td><input type="datetime-local" name="dateTime" value="${item.getDateTime()}"></td>
                 <td><input type="text" name="description" value="${item.getDescription()}"></td>
                 <td><input type="number" name="calories" value="${item.getCalories()}"></td>

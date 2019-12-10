@@ -31,6 +31,7 @@ public class MealsServlet extends HttpServlet {
         log.debug("redirect to servlet");
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
+
         if (action != null) {
             if (action.equalsIgnoreCase("delete")) {
                 Integer id = null;
@@ -41,10 +42,13 @@ public class MealsServlet extends HttpServlet {
                 }
                 if (id != null) {
                     mealDao.delete(id);
+
                 }
             }
-        }
-        forward(request, response);
+            response.sendRedirect("meals");
+        } else
+            forward(request, response);
+
     }
 
     private void forward(HttpServletRequest request, HttpServletResponse response) {
