@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealDao implements MealCrud {
+public class MealDaoInMemory implements MealCrud {
     private static AtomicInteger lastId = new AtomicInteger(0);
     private static ConcurrentMap<Integer, Meal> meals = new ConcurrentHashMap<Integer, Meal>() {
         {
@@ -27,14 +27,15 @@ public class MealDao implements MealCrud {
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(int id) {
         meals.remove(id);
     }
 
     @Override
     public void create(Meal meal) {
-        meal.setId(lastId.incrementAndGet());
-        meals.put(lastId.get(), meal);
+        final int id = lastId.incrementAndGet();
+        meal.setId(id);
+        meals.put(id, meal);
     }
 
     @Override
