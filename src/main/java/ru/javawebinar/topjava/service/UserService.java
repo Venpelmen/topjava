@@ -6,6 +6,8 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
@@ -38,7 +40,8 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return repository.getAll();
+        //Todo здесь должно быть как-то иначе
+        return new ArrayList<>(repository.getAll());
     }
 
     public void update(User user) throws NotFoundException {
