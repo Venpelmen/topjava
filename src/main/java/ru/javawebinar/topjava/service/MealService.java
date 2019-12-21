@@ -29,7 +29,7 @@ public class MealService {
         }
     }
 
-    //Todo я создал еду, но как прикрепить ее к пользователю?
+
     public void create(Meal meal, int userId) throws NotFoundException {
         repository.save(meal, userId);
     }
@@ -55,5 +55,10 @@ public class MealService {
     public Collection<Meal> getAll(int userId) {
         return repository.getAll(userId).stream().
                 sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
+    }
+
+    public Collection<Meal> getAllFiltered(int userId) {
+        return repository.getAll(userId).stream().
+                sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
     }
 }

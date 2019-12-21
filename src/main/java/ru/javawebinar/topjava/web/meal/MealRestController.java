@@ -37,4 +37,8 @@ public class MealRestController {
     public void create(Meal meal) {
         service.create(meal,userId);
     }
+
+    public Collection<Meal> getAllWithFiltered() {
+        return service.getAllFiltered(userId);
+    }
 }

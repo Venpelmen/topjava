@@ -16,14 +16,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.SpringMain.mealRestController;
+import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private final MealRestController mealRestController = new ClassPathXmlApplicationContext("spring/spring-app.xml").getBean(MealRestController .class);
+    private final MealRestController mealRestController = new ClassPathXmlApplicationContext("spring/spring-app.xml").getBean(MealRestController.class);
 
 
     //Todo  учесть, что когда будем работать через Spring MVC, MealServlet удалим, те вся логика должна быть в контроллере. Нипонил
@@ -35,16 +37,34 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
+        if (request.getParameter("action").equals("filter")) {
+            if (!request.getParameter("startDateTime").equals("") & !request.getParameter("endDateTime").equals("")) {
+                LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startDateTime"));
+                LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endDateTime"));
+                request.setAttribute("meals",
+                        MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                return;
+            } else if (!request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("")) {
+                LocalTime startDateTime = LocalTime.parse(request.getParameter("startTime"));
+                LocalTime endDateTime = LocalTime.parse(request.getParameter("endTime"));
+                request.setAttribute("meals",
+                        MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(),DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+            }
+        }
+        else {
+            String id = request.getParameter("id");
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRestController.create(meal);
-        response.sendRedirect("meals");
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            mealRestController.create(meal);
+            response.sendRedirect("meals");
+        }
     }
 
     @Override
@@ -52,6 +72,10 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
+            case "resetFilter":
+                request.setAttribute("meals",
+                        MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
@@ -70,7 +94,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
