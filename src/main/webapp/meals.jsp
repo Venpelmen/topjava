@@ -26,7 +26,7 @@
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
-            <th>Date</th>
+            <th>Date<a href="meals?action=updateDateFilter>Отфильтровать</a></th>
             <th>Description</th>
             <th>Calories</th>
             <th></th>

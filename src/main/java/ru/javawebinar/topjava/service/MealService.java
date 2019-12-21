@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundForAuthorizedUserWithId;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
@@ -21,24 +20,25 @@ public class MealService {
         this.repository = repository;
     }
 
-
+    //Реализация с NotFoundException при NullPointerException грубовата, но работает
     public void update(Meal meal, int userId) throws NotFoundException {
         try {
-            checkNotFoundForAuthorizedUserWithId(repository.get(meal.getId()).getUserId() == userId, userId);
-            checkNotFoundWithId(repository.save(meal), meal.getId());
-        }
-        catch (NullPointerException e){
+            checkNotFoundWithId(repository.save(meal,userId), userId);
+        } catch (NullPointerException e) {
             throw new NotFoundException("Not found entity with id=" + meal.getId());
         }
+    }
+
+    //Todo я создал еду, но как прикрепить ее к пользователю?
+    public void create(Meal meal, int userId) throws NotFoundException {
+        repository.save(meal, userId);
     }
 
 
     public void delete(int id, int userId) throws NotFoundException {
         try {
-            checkNotFoundForAuthorizedUserWithId(repository.get(id).getUserId() == userId, userId);
-            repository.delete(id);
-        }
-        catch (NullPointerException e){
+            checkNotFoundWithId(repository.delete(id, userId), id);
+        } catch (NullPointerException e) {
             throw new NotFoundException("Not found entity with id=" + id);
         }
     }
@@ -46,21 +46,14 @@ public class MealService {
 
     public Meal get(int id, int userId) throws NotFoundException {
         try {
-        Meal meal  = checkNotFoundWithId(repository.get(id), id);
-        checkNotFoundForAuthorizedUserWithId(meal.getUserId() == userId, userId);
-        return meal;
-        }
-        catch (NullPointerException e){
+            return checkNotFoundWithId(repository.get(id, userId), id);
+        } catch (NullPointerException e) {
             throw new NotFoundException("Not found entity with id=" + id);
         }
     }
 
     public Collection<Meal> getAll(int userId) {
-        return repository.getAll().stream().sorted(new Comparator<Meal>() {
-            @Override
-            public int compare(Meal meal, Meal meal1) {
-                return meal.getDate().compareTo(meal1.getDate());
-            }
-        }).collect(Collectors.toList());
+        return repository.getAll(userId).stream().
+                sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
     }
 }

@@ -9,6 +9,7 @@ import java.util.Collection;
 
 @Controller
 public class MealRestController {
+    //Todo 4.4: конвертацию в MealTo можно делать как в слое web, так и в service (Mapping Entity->DTO: Controller or Service?)
     private int userId = SecurityUtil.authUserId();
     private final MealService service;
 
@@ -31,5 +32,9 @@ public class MealRestController {
 
     public void update(Meal meal) {
         service.update(meal,userId);
+    }
+
+    public void create(Meal meal) {
+        service.create(meal,userId);
     }
 }
