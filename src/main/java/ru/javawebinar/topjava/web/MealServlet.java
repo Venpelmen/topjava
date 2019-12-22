@@ -37,21 +37,8 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        if (request.getParameter("action").equals("filter")) {
-            if (!request.getParameter("startDateTime").equals("") & !request.getParameter("endDateTime").equals("")) {
-                LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startDateTime"));
-                LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endDateTime"));
-                request.setAttribute("meals",
-                        MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                return;
-            } else if (!request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("")) {
-                LocalTime startDateTime = LocalTime.parse(request.getParameter("startTime"));
-                LocalTime endDateTime = LocalTime.parse(request.getParameter("endTime"));
-                request.setAttribute("meals",
-                        MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(),DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-            }
+        if (request.getParameter("action") != null) {
+            filter(request,response);
         }
         else {
             String id = request.getParameter("id");
@@ -64,6 +51,23 @@ public class MealServlet extends HttpServlet {
             log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
             mealRestController.create(meal);
             response.sendRedirect("meals");
+        }
+    }
+
+    private void filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!request.getParameter("startDateTime").equals("") & !request.getParameter("endDateTime").equals("")) {
+            LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startDateTime"));
+            LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endDateTime"));
+            request.setAttribute("meals",
+                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+            return;
+        } else if (!request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("")) {
+            LocalTime startDateTime = LocalTime.parse(request.getParameter("startTime"));
+            LocalTime endDateTime = LocalTime.parse(request.getParameter("endTime"));
+            request.setAttribute("meals",
+                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(),DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
     }
 
