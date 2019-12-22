@@ -16,21 +16,24 @@ public class InMemoryMealRepository implements MealRepository {
     private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
-    {   //Сказано использовать SecurityUtil.authUserId() только в слое Web. Надеюсь здесь это не ошибка,
-        // с таким же успехом здесь может быть id = 1. Скорее всего, требовалось чтобы мы не использовали метод в сервисе
-        repository.computeIfAbsent(SecurityUtil.authUserId(), integer -> new ConcurrentHashMap<Integer, Meal>());
-        MealsUtil.MEALS.forEach(item -> save(item,1));
+    {
+        repository.computeIfAbsent(1, integer -> new ConcurrentHashMap<Integer, Meal>());
+        MealsUtil.MEALS.forEach(item -> save(item, 1));
+
     }
 
 
     @Override
-    public Meal save(Meal meal,int userId) {
-        if (meal.isNew()) {
+    public Meal save(Meal meal, int userId) {
+        if (meal.isNew() & repository.get(userId) != null) {
             meal.setId(counter.incrementAndGet());
             Map<Integer, Meal> mealItem = new ConcurrentHashMap<>();
             //Если пользователя нет в репо то мы упадем...
             repository.get(userId).put(meal.getId(), meal);
             return meal;
+        } else {
+            meal.setId(counter.incrementAndGet());
+            repository.put(userId, new ConcurrentHashMap<Integer, Meal>()).put(meal.getId(), meal);
         }
         // treat case: update, but not present in storage
         return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
@@ -49,8 +52,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return repository.get(userId).values().stream().
-                sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toCollection(ArrayList::new));
+        return repository.get(userId).values();
     }
 
 }

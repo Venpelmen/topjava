@@ -29,13 +29,20 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             UserRepository userBean = appCtx.getBean(UserRepository.class);
             MealRepository mealRepository = appCtx.getBean(MealRepository.class);
-            //Проверка существующей записи, которая принадлежит авторизованному пользователю
-            //Check step 3.3
+            adminUserController.create(new User(null, "FARID", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "George", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "Elisa", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "Donald", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "Cindy", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "Bob", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "abba", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            //1 возвращаем пользователей отсортированными по имени.
+            System.out.println(userBean.getAll());
             System.out.println(mealRepository.getAll(SecurityUtil.authUserId()));
             userBean.getByEmail("email@mail.ru");
-          checkSomeIdOnCrudOperation(1,mealRestController);
-            checkSomeIdOnCrudOperation(127,mealRestController);
-            checkSomeIdOnCrudOperation(2,mealRestController);
+            checkSomeIdOnCrudOperation(1, mealRestController);
+            checkSomeIdOnCrudOperation(127, mealRestController);
+            checkSomeIdOnCrudOperation(2, mealRestController);
 
         }
     }
@@ -48,8 +55,8 @@ public class SpringMain {
             System.out.println(e.toString());
         }
         try {
-            Meal meal =  new Meal(id, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
-          //  meal.setUserId(1);
+            Meal meal = new Meal(id, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
+            //  meal.setUserId(1);
             bean.update(meal);
         } catch (Exception e) {
             System.out.println(e.toString());

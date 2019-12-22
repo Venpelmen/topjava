@@ -17,23 +17,7 @@ public class InMemoryUserRepository implements UserRepository {
     private Map<Integer, User> repository = new ConcurrentHashMap<Integer, User>();
     private AtomicInteger counter = new AtomicInteger(0);
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-    private static List<User> users = new ArrayList<User>() {
-        {
-            add(new User(null, "FARID", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "George", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "Elisa", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "Donald", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "Cindy", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "Bob", "email@mail.ru", "password", Role.ROLE_ADMIN));
-            add(new User(null, "abba", "email@mail.ru", "password", Role.ROLE_ADMIN));
-        }
-        //Смысла в этом перекладывании не вижу. Но сказали сделать как Meal
-    };
-
-
-    {
-        users.forEach(this::save);
-    }
+    private static List<User> users = new ArrayList<User>();
 
     @Override
     public boolean delete(int id) {

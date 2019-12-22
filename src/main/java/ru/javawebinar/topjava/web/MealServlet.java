@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -38,11 +39,9 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         if (request.getParameter("action") != null) {
-            filter(request,response);
-        }
-        else {
+            filter(request, response);
+        } else {
             String id = request.getParameter("id");
-
             Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                     LocalDateTime.parse(request.getParameter("dateTime")),
                     request.getParameter("description"),
@@ -59,14 +58,14 @@ public class MealServlet extends HttpServlet {
             LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startDateTime"));
             LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endDateTime"));
             request.setAttribute("meals",
-                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY, startDateTime, endDateTime));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
             return;
         } else if (!request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("")) {
             LocalTime startDateTime = LocalTime.parse(request.getParameter("startTime"));
             LocalTime endDateTime = LocalTime.parse(request.getParameter("endTime"));
             request.setAttribute("meals",
-                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(),DEFAULT_CALORIES_PER_DAY,startDateTime,endDateTime));
+                    MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY, startDateTime, endDateTime));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
     }
@@ -97,8 +96,12 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
+                try {
+                    request.setAttribute("meals",
+                            MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
+                } catch (NotFoundException e) {
+                    System.out.println("Записей еще нет ".concat(e.getMessage()));
+                }
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

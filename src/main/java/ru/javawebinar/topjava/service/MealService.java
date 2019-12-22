@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class MealService {
     //Реализация с NotFoundException при NullPointerException грубовата, но работает
     public void update(Meal meal, int userId) throws NotFoundException {
         try {
-            checkNotFoundWithId(repository.save(meal,userId), userId);
+            checkNotFoundWithId(repository.save(meal, userId), userId);
         } catch (NullPointerException e) {
             throw new NotFoundException("Not found entity with id=" + meal.getId());
         }
@@ -53,12 +54,18 @@ public class MealService {
     }
 
     public Collection<Meal> getAll(int userId) {
-        return repository.getAll(userId).stream().
+        try {
+            return repository.getAll(userId).stream().
+                    sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new NotFoundException("Not found map with userId=" + userId);
+        }
+    }
+
+    public Collection<Meal> getAllSorted(int userId) {
+        return getAll(userId).stream().
                 sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
     }
 
-    public Collection<Meal> getAllFiltered(int userId) {
-        return repository.getAll(userId).stream().
-                sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
-    }
+
 }

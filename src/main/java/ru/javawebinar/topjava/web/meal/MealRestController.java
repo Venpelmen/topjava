@@ -10,7 +10,7 @@ import java.util.Collection;
 @Controller
 public class MealRestController {
     //Todo 4.4: конвертацию в MealTo можно делать как в слое web, так и в service (Mapping Entity->DTO: Controller or Service?)
-    private int userId = SecurityUtil.authUserId();
+
     private final MealService service;
 
     public MealRestController(MealService service) {
@@ -18,27 +18,27 @@ public class MealRestController {
     }
 
     public void delete(int id) {
-       service.delete(id,userId);
+        service.delete(id, SecurityUtil.authUserId());
     }
 
     public Meal get(int id) {
-       return service.get(id,userId);
+        return service.get(id, SecurityUtil.authUserId());
     }
 
 
     public Collection<Meal> getAll() {
-       return service.getAll(userId);
+        return service.getAll(SecurityUtil.authUserId());
     }
 
     public void update(Meal meal) {
-        service.update(meal,userId);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
     public void create(Meal meal) {
-        service.create(meal,userId);
+        service.create(meal, SecurityUtil.authUserId());
     }
 
     public Collection<Meal> getAllWithFiltered() {
-        return service.getAllFiltered(userId);
+        return service.getAllSorted(SecurityUtil.authUserId());
     }
 }
