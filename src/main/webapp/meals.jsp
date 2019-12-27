@@ -30,11 +30,11 @@
                 <input hidden name="action" value="filter">
                 <p>От даты
 
-                    <input type="datetime-local" name="startDateTime">
+                    <input type="date" name="startDateTime">
                 </p>
                 <p>До даты
 
-                    <input type="datetime-local" name="endDateTime">
+                    <input type="date" name="endDateTime">
                 </p>
             </div>
             <div class="right">

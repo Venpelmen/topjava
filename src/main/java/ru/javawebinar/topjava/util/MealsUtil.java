@@ -34,9 +34,10 @@ public class MealsUtil {
         return getFiltered(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime));
     }
 
-    public static List<MealTo> getFilteredTos(Collection<Meal> meals, int caloriesPerDay, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return getFiltered(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime));
+    public static List<MealTo> getFilteredTos(Collection<Meal> meals, int caloriesPerDay, LocalDate startDate, LocalDate endDateTime) {
+        return getFiltered(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), startDate, endDateTime));
     }
+
 
     private static List<MealTo> getFiltered(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()

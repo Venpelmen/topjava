@@ -3,11 +3,13 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -55,8 +57,7 @@ public class MealService {
 
     public Collection<Meal> getAll(int userId) {
         try {
-            return repository.getAll(userId).stream().
-                    sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+            return repository.getAll(userId);
         } catch (NullPointerException e) {
             throw new NotFoundException("Not found map with userId=" + userId);
         }
@@ -66,6 +67,12 @@ public class MealService {
         return getAll(userId).stream().
                 sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
     }
+
+
+    /*public List<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+
+        return repository.getAllWithFiltered(userId,startDate,endDate);
+    }*/
 
 
 }
