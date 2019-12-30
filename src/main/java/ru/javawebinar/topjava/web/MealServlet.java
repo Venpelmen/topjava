@@ -48,7 +48,7 @@ public class MealServlet extends HttpServlet {
             if (meals == null) {
                 meals = MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY);
             }
-            request.setAttribute("meals",meals);
+            request.setAttribute("meals", meals);
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
 
         } else {

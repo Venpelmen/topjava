@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpringMain {
-    private static List<String> operations = Arrays.asList("Get", "Update", "Delete");
     public static MealRestController mealRestController;
+    private static List<String> operations = Arrays.asList("Get", "Update", "Delete");
 
     public static void main(String[] args) {
         // java 7 automatic resource management

@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.util;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
@@ -19,7 +17,7 @@ public class DateTimeUtil {
 */
 
 
-    public static  <T extends Comparable<T>>boolean isBetween(T lt, T start, T end) {
+    public static <T extends Comparable<T>> boolean isBetween(T lt, T start, T end) {
         return lt.compareTo(start) >= 0 && lt.compareTo(end) <= 0;
     }
 
