@@ -64,15 +64,11 @@ public class MealService {
     }
 
     public Collection<Meal> getAllSorted(int userId) {
+        try {
         return getAll(userId).stream().
                 sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            throw new NotFoundException("Not found map with userId=" + userId);
+        }
     }
-
-
-    /*public List<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
-
-        return repository.getAllWithFiltered(userId,startDate,endDate);
-    }*/
-
-
 }
