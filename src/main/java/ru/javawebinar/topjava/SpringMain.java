@@ -42,6 +42,7 @@ public class SpringMain {
             userBean.getByEmail("email@mail.ru");
             checkSomeIdOnCrudOperation(1, mealRestController);
             checkSomeIdOnCrudOperation(127, mealRestController);
+            SecurityUtil.setAuthUserId(2);
             checkSomeIdOnCrudOperation(2, mealRestController);
 
         }
