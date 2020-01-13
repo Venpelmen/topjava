@@ -3,8 +3,10 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -40,26 +42,26 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return repository.get(userId).remove(id) != null;
+        return (repository.containsKey(userId) && repository.get(userId).containsKey(id)) && repository.get(userId).remove(id) != null;
+       // return repository.get(userId).remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return repository.get(userId).get(id);
+        return (repository.containsKey(userId) && repository.get(userId).containsKey(id)) ? repository.get(userId).get(id) : null;
+       // return repository.get(userId).get(id);
     }
 
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return repository.get(userId).values().stream().
-                sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+        return repository.containsKey(userId) ? repository.get(userId).values().stream().
+                sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList()) : new ArrayList<>();
     }
 
-
-   /* @Override
-    public List<MealTo> getAllWithFiltered(int userId, LocalDate startDate, LocalDate endDate){
-       return MealsUtil.getFilteredTos(getAll(userId), DEFAULT_CALORIES_PER_DAY, startDate, endDate);
-    }*/
+    public <T extends Comparable<T>> Collection<MealTo> getAllWithFiltered(int userId, T start, T end){
+      return   MealsUtil.getFilteredTos(getAll(userId),start,end);
+    }
 
 }
 

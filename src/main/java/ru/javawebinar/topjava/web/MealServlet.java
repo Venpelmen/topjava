@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,23 +64,20 @@ public class MealServlet extends HttpServlet {
         }
     }
 
-    private List<MealTo> filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<MealTo> filteredTos = null;
+    private Collection<Meal> filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Collection<Meal> filteredTos = null;
         boolean isFilterWithDateRequest = !request.getParameter("startDateTime").equals("") & !request.getParameter("endDateTime").equals("");
         boolean isFilterWithTimeRequest = !request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("");
         if (isFilterWithDateRequest) {
             LocalDate startDate = LocalDate.parse(request.getParameter("startDateTime"));
             LocalDate endDate = LocalDate.parse(request.getParameter("endDateTime"));
-            filteredTos = MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY, startDate, endDate);
+            //filteredTos = MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(startDate, endDate), DEFAULT_CALORIES_PER_DAY, startDate, endDate);
 
         } else if (isFilterWithTimeRequest) {
             LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
             LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
-            filteredTos = MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(), DEFAULT_CALORIES_PER_DAY, startTime, endTime);
+            filteredTos = mealRestController.getAllWithFiltered(startTime, endTime)//MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(startTime, endTime), DEFAULT_CALORIES_PER_DAY, startTime, endTime);
         }
-       /* else {
-            filteredTos =   MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY);
-        }*/
         return filteredTos;
 
     }

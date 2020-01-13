@@ -38,7 +38,7 @@ public class MealRestController {
         service.create(meal, SecurityUtil.authUserId());
     }
 
-    public Collection<Meal> getAllWithFiltered() {
-        return service.getAllSorted(SecurityUtil.authUserId());
+    public <T extends Comparable<T>> Collection<Meal>  getAllWithFiltered(T start, T end) {
+        return service.getAllFiltered(SecurityUtil.authUserId(),start,end);
     }
 }

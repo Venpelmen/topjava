@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 public interface MealRepository {
     // null if not found, when updated
@@ -15,6 +18,8 @@ public interface MealRepository {
     Meal get(int id, int userId);
 
     Collection<Meal> getAll(int userId);
-/*
-    List<MealTo> getAllWithFiltered List<MealTo> getAllWithFiltered(int userId, LocalDate startDate, LocalDate endDate);*/
+
+    Collection<Meal> getAllWithFiltered(int userId, LocalDate startDate, LocalDate endDate);
+    <T extends Comparable<T>> Collection<MealTo> getAllWithFiltered(int userId, T start, T end);
+    //List<MealTo> getAllWithFiltered List<MealTo> getAllWithFiltered(int userId, LocalDate startDate, LocalDate endDate);
 }

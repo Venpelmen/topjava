@@ -22,11 +22,9 @@ public class MealService {
 
     //Реализация с NotFoundException при NullPointerException грубовата, но работает
     public void update(Meal meal, int userId) throws NotFoundException {
-        try {
+
             checkNotFoundWithId(repository.save(meal, userId), userId);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("Not found entity with id=" + meal.getId());
-        }
+
     }
 
 
@@ -36,36 +34,32 @@ public class MealService {
 
 
     public void delete(int id, int userId) throws NotFoundException {
-        try {
             checkNotFoundWithId(repository.delete(id, userId), id);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("Not found entity with id=" + id);
-        }
+
     }
 
 
     public Meal get(int id, int userId) throws NotFoundException {
-        try {
             return checkNotFoundWithId(repository.get(id, userId), id);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("Not found entity with id=" + id);
-        }
     }
 
     public Collection<Meal> getAll(int userId) {
-        try {
+
             return repository.getAll(userId);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("Not found map with userId=" + userId);
-        }
+
     }
 
     public Collection<Meal> getAllSorted(int userId) {
-        try {
-            return getAll(userId).stream().
-                    sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
-        } catch (NullPointerException e) {
-            throw new NotFoundException("Not found map with userId=" + userId);
-        }
+        return repository.getAll(userId);
+    }
+
+
+    public Collection<Meal> getAllFiltered(int userId,) {
+        return repository.getAllWithFiltered();
+    }
+
+
+    public <T extends Comparable<T>> Collection<Meal> getAllFiltered(int authUserId, T start, T end) {
+        repository.getAllWithFiltered(authUserId,start,end);
     }
 }

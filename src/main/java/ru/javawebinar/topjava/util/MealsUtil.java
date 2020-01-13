@@ -34,8 +34,14 @@ public class MealsUtil {
         return getFiltered(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime));
     }
 
+
+
     public static List<MealTo> getFilteredTos(Collection<Meal> meals, int caloriesPerDay, LocalDate startDate, LocalDate endDateTime) {
         return getFiltered(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), startDate, endDateTime));
+    }
+
+    public static <T extends Comparable<T>> List<MealTo> getFilteredTos(Collection<Meal> meals, T start, T end) {
+        return getFiltered(meals, DEFAULT_CALORIES_PER_DAY, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), start, end));
     }
 
 
