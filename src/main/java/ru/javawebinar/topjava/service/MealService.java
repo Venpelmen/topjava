@@ -3,11 +3,12 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -20,46 +21,35 @@ public class MealService {
         this.repository = repository;
     }
 
-    //Реализация с NotFoundException при NullPointerException грубовата, но работает
     public void update(Meal meal, int userId) throws NotFoundException {
-
-            checkNotFoundWithId(repository.save(meal, userId), userId);
-
+        checkNotFoundWithId(repository.save(meal, userId), userId);
     }
 
 
-    public void create(Meal meal, int userId) throws NotFoundException {
+    public void create(Meal meal, int userId) {
         repository.save(meal, userId);
     }
 
 
     public void delete(int id, int userId) throws NotFoundException {
-            checkNotFoundWithId(repository.delete(id, userId), id);
+        checkNotFoundWithId(repository.delete(id, userId), id);
 
     }
 
-
     public Meal get(int id, int userId) throws NotFoundException {
-            return checkNotFoundWithId(repository.get(id, userId), id);
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     public Collection<Meal> getAll(int userId) {
-
-            return repository.getAll(userId);
-
-    }
-
-    public Collection<Meal> getAllSorted(int userId) {
         return repository.getAll(userId);
     }
 
 
-    public Collection<Meal> getAllFiltered(int userId,) {
-        return repository.getAllWithFiltered();
+    public Collection<MealTo> getAllFiltered(int authUserId, LocalDate start, LocalDate end) {
+        return repository.getAllWithFiltered(authUserId, start, end);
     }
 
-
-    public <T extends Comparable<T>> Collection<Meal> getAllFiltered(int authUserId, T start, T end) {
-        repository.getAllWithFiltered(authUserId,start,end);
+    public Collection<MealTo> getAllFiltered(int authUserId, LocalTime start, LocalTime end) {
+        return repository.getAllWithFiltered(authUserId, start, end);
     }
 }

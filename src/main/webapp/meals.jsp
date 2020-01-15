@@ -24,27 +24,31 @@
     <a href="meals?action=create">Add Meal</a>
     <br>
     <br>
-    <form method="post" action="meals">
+    <form method="get" action="meals">
         <div class="filter">
             <div class="left">
                 <input hidden name="action" value="filter">
                 <p>От даты
-
-                    <input type="date" name="startDateTime">
+                    <label>
+                        <input type="date" name="startDate" value="startDate">
+                    </label>
                 </p>
                 <p>До даты
-
-                    <input type="date" name="endDateTime">
+                    <label>
+                        <input type="date" name="endDate"  value="endDate">
+                    </label>
                 </p>
             </div>
             <div class="right">
                 <p>От времени
-
-                    <input type="time" name="startTime">
+                    <label>
+                        <input type="time" name="startTime"   value="startTime" >
+                    </label>
                 </p>
                 <p>До времени
-
-                    <input type="time" name="endTime">
+                    <label>
+                        <input type="time" name="endTime" value="endTime">
+                    </label>
                 </p>
             </div>
             <p>
@@ -52,11 +56,8 @@
                     <a href="meals?action=resetFilter"> Сбросить</a>
                 </button>
             </p>
-            <p>
-                <button type="submit"> Отфильтровать</button>
-            </p>
-
         </div>
+        <input type="submit"  />
     </form>
     <table class="table" border="1" cellpadding="8" cellspacing="0">
         <thead>

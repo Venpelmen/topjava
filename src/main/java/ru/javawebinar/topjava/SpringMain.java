@@ -2,9 +2,7 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.*;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.web.SecurityUtil;
@@ -14,7 +12,9 @@ import ru.javawebinar.topjava.web.user.AdminRestController;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpringMain {
     public static MealRestController mealRestController;
@@ -36,6 +36,7 @@ public class SpringMain {
             adminUserController.create(new User(null, "Cindy", "email@mail.ru", "password", Role.ROLE_ADMIN));
             adminUserController.create(new User(null, "Bob", "email@mail.ru", "password", Role.ROLE_ADMIN));
             adminUserController.create(new User(null, "abba", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "abba", "email@mail.ru", "password", Role.ROLE_ADMIN));
             //1 возвращаем пользователей отсортированными по имени.
             System.out.println(userBean.getAll());
             System.out.println(mealRepository.getAll(SecurityUtil.authUserId()));
@@ -44,6 +45,10 @@ public class SpringMain {
             checkSomeIdOnCrudOperation(127, mealRestController);
             SecurityUtil.setAuthUserId(2);
             checkSomeIdOnCrudOperation(2, mealRestController);
+
+            UserRepository userRepository = appCtx.getBean(UserRepository.class);
+            userRepository.getAll().stream().
+                    sorted(Comparator.comparing(AbstractNamedEntity::getName).thenComparing(AbstractBaseEntity::getId)).collect(Collectors.toList());
 
         }
     }
@@ -58,7 +63,7 @@ public class SpringMain {
         try {
             Meal meal = new Meal(id, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
             //  meal.setUserId(1);
-            bean.update(meal);
+            bean.update(meal, id);
         } catch (Exception e) {
             System.out.println(e.toString());
         }

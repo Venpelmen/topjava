@@ -6,6 +6,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -22,16 +24,14 @@ public class InMemoryMealRepository implements MealRepository {
     {
         repository.computeIfAbsent(1, integer -> new ConcurrentHashMap<>());
         MealsUtil.MEALS.forEach(item -> save(item, 1));
-
     }
-
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (repository.get(userId) == null){
+        if (repository.get(userId) == null) {
             repository.put(userId, new ConcurrentHashMap<>());
         }
-        if (meal.isNew() ) {
+        if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             repository.get(userId).put(meal.getId(), meal);
             return meal;
@@ -42,25 +42,30 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return (repository.containsKey(userId) && repository.get(userId).containsKey(id)) && repository.get(userId).remove(id) != null;
-       // return repository.get(userId).remove(id) != null;
+        Map<Integer, Meal> mealMap = repository.getOrDefault(userId, null);
+        return mealMap != null && mealMap.remove(id) != null;
+
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return (repository.containsKey(userId) && repository.get(userId).containsKey(id)) ? repository.get(userId).get(id) : null;
-       // return repository.get(userId).get(id);
+        return repository.getOrDefault(userId, new ConcurrentHashMap<>()).getOrDefault(id, null);
     }
-
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return repository.containsKey(userId) ? repository.get(userId).values().stream().
+        Map<Integer, Meal> repositoryOrNull = repository.getOrDefault(userId, null);
+        return repositoryOrNull != null ? repository.get(userId).values().stream().
                 sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList()) : new ArrayList<>();
     }
 
-    public <T extends Comparable<T>> Collection<MealTo> getAllWithFiltered(int userId, T start, T end){
-      return   MealsUtil.getFilteredTos(getAll(userId),start,end);
+
+    public Collection<MealTo> getAllWithFiltered(int userId, LocalDate start, LocalDate end) {
+        return MealsUtil.getFilteredTos(getAll(userId), start, end);
+    }
+
+    public Collection<MealTo> getAllWithFiltered(int userId, LocalTime start, LocalTime end) {
+        return MealsUtil.getFilteredTos(getAll(userId), start, end);
     }
 
 }

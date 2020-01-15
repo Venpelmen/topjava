@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -15,15 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -39,47 +31,16 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        List<MealTo> meals;
-        if (request.getParameter("action") != null) {
-            meals = filter(request, response);
-            request.setAttribute("meals",
-                    meals);
-            if (meals == null) {
-                meals = MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY);
-            }
-            request.setAttribute("meals", meals);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-
-        } else {
-            String id = request.getParameter("id");
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")));
-            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-            mealRestController.create(meal);
-            response.sendRedirect("meals");
-        }
-    }
-
-    private Collection<Meal> filter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Collection<Meal> filteredTos = null;
-        boolean isFilterWithDateRequest = !request.getParameter("startDateTime").equals("") & !request.getParameter("endDateTime").equals("");
-        boolean isFilterWithTimeRequest = !request.getParameter("startTime").equals("") & !request.getParameter("endTime").equals("");
-        if (isFilterWithDateRequest) {
-            LocalDate startDate = LocalDate.parse(request.getParameter("startDateTime"));
-            LocalDate endDate = LocalDate.parse(request.getParameter("endDateTime"));
-            //filteredTos = MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(startDate, endDate), DEFAULT_CALORIES_PER_DAY, startDate, endDate);
-
-        } else if (isFilterWithTimeRequest) {
-            LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
-            LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
-            filteredTos = mealRestController.getAllWithFiltered(startTime, endTime)//MealsUtil.getFilteredTos(mealRestController.getAllWithFiltered(startTime, endTime), DEFAULT_CALORIES_PER_DAY, startTime, endTime);
-        }
-        return filteredTos;
-
+        String id = request.getParameter("id");
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        mealRestController.update(meal, Integer.parseInt(id));
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -87,9 +48,13 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         switch (action == null ? "all" : action) {
-            case "resetFilter":
+            case "filter":
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
+                String startTime = request.getParameter("startTime");
+                String endTime = request.getParameter("endTime");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
+                        mealRestController.getAllWithFiltered(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
             case "delete":
                 int id = getId(request);
@@ -110,7 +75,7 @@ public class MealServlet extends HttpServlet {
                 log.info("getAll");
                 try {
                     request.setAttribute("meals",
-                            MealsUtil.getTos(mealRestController.getAll(), DEFAULT_CALORIES_PER_DAY));
+                            mealRestController.getAll());
                 } catch (NotFoundException e) {
                     System.out.println("Записей еще нет ".concat(e.getMessage()));
                 }
