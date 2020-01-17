@@ -30,9 +30,6 @@ public class MealsUtil {
         return getFiltered(meals, caloriesPerDay, meal -> true);
     }
 
-    public static List<Meal> getFiltered(Collection<Meal> meals, LocalDate start, LocalDate end) {
-        return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), start, end));
-    }
 
     public static List<Meal> getFiltered(Collection<Meal> meals, LocalDateTime start, LocalDateTime end) {
         return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime(), start, end));

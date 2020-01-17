@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 
+import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
@@ -46,20 +47,15 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public Collection<Meal> getAll(int userId) {
-        return repository.getAll(userId);
+    public Collection<MealTo> getAll(int userId) {
+        return MealsUtil.getTos(repository.getAll(userId), DEFAULT_CALORIES_PER_DAY);
     }
 
-
-    public Collection<MealTo> getAllFiltered(int userId, LocalDate start, LocalDate end) {
-        return MealsUtil.getTos(repository.getAllWithFiltered(userId, start, end), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public Collection<MealTo> getAllFiltered(int userId, LocalDateTime start, LocalDateTime end) {
-        return MealsUtil.getTos(repository.getAllWithFiltered(userId, start, end), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-    }
-
-    public Collection<MealTo> getAllFiltered(int userId, LocalTime start, LocalTime end) {
-        return MealsUtil.getTos(repository.getAllWithFiltered(userId, start, end), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    public Collection<MealTo> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        Collection<Meal> allWithFiltered =
+                startDate == LocalDate.MIN && endDate == LocalDate.MAX ?
+                        repository.getAllWithFiltered(userId, startTime, endTime) :
+                        repository.getAllWithFiltered(userId, LocalDateTime.of(startDate, startTime), LocalDateTime.of(endDate, endTime));
+        return MealsUtil.getTos(allWithFiltered, DEFAULT_CALORIES_PER_DAY);
     }
 }
