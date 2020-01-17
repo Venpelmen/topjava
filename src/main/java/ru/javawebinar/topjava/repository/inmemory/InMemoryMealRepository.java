@@ -60,12 +60,12 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
 
-    public Collection<MealTo> getAllWithFiltered(int userId, LocalDate start, LocalDate end) {
-        return MealsUtil.getFilteredTos(getAll(userId), start, end);
+    public Collection<Meal> getAllWithFiltered(int userId, LocalDate start, LocalDate end) {
+        return MealsUtil.getFiltered(getAll(userId), start, end);
     }
 
-    public Collection<MealTo> getAllWithFiltered(int userId, LocalTime start, LocalTime end) {
-        return MealsUtil.getFilteredTos(getAll(userId), start, end);
+    public Collection<Meal> getAllWithFiltered(int userId, LocalTime start, LocalTime end) {
+        return MealsUtil.getFiltered(getAll(userId), start, end);
     }
 
 }

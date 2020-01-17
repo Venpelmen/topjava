@@ -30,14 +30,17 @@ public class MealsUtil {
         return getFiltered(meals, caloriesPerDay, meal -> true);
     }
 
-    public static List<MealTo> getFilteredTos(Collection<Meal> meals, LocalDate start, LocalDate end) {
-        return getFiltered(meals, DEFAULT_CALORIES_PER_DAY, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), start, end));
+    public static List<Meal> getFiltered(Collection<Meal> meals, LocalDate start, LocalDate end) {
+        return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), start, end));
     }
 
-    public static List<MealTo> getFilteredTos(Collection<Meal> meals, LocalTime start, LocalTime end) {
-        return getFiltered(meals, DEFAULT_CALORIES_PER_DAY, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalTime(), start, end));
+    public static List<Meal> getFiltered(Collection<Meal> meals, LocalTime start, LocalTime end) {
+        return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalTime(), start, end));
     }
 
+    private static List<Meal> getFilteredMeal(Collection<Meal> meals, Predicate<Meal> filter) {
+        return meals.stream().filter(filter).collect(Collectors.toList());
+    }
 
     private static List<MealTo> getFiltered(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()

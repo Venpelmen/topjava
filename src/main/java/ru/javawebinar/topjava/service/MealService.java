@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -46,10 +47,10 @@ public class MealService {
 
 
     public Collection<MealTo> getAllFiltered(int authUserId, LocalDate start, LocalDate end) {
-        return repository.getAllWithFiltered(authUserId, start, end);
+        return MealsUtil.getTos(repository.getAllWithFiltered(authUserId, start, end), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public Collection<MealTo> getAllFiltered(int authUserId, LocalTime start, LocalTime end) {
-        return repository.getAllWithFiltered(authUserId, start, end);
+        return MealsUtil.getTos(repository.getAllWithFiltered(authUserId, start, end), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 }
