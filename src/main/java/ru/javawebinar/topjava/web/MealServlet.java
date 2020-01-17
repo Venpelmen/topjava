@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -13,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -49,10 +50,10 @@ public class MealServlet extends HttpServlet {
 
         switch (action == null ? "all" : action) {
             case "filter":
-                String startDate = request.getParameter("startDate");
-                String endDate = request.getParameter("endDate");
-                String startTime = request.getParameter("startTime");
-                String endTime = request.getParameter("endTime");
+                LocalDate startDate = !request.getParameter("startDate").equals("") ? LocalDate.parse(request.getParameter("startDate")) : LocalDate.MIN;
+                LocalDate endDate = !request.getParameter("endDate").equals("") ? LocalDate.parse(request.getParameter("endDate")) : LocalDate.MAX;
+                LocalTime startTime = !request.getParameter("startTime").equals("") ? LocalTime.parse(request.getParameter("startTime")) : LocalTime.MIN;
+                LocalTime endTime = !request.getParameter("endTime").equals("") ? LocalTime.parse(request.getParameter("endTime")) : LocalTime.MAX;
                 request.setAttribute("meals",
                         mealRestController.getAllWithFiltered(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
@@ -73,12 +74,8 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                try {
-                    request.setAttribute("meals",
-                            mealRestController.getAll());
-                } catch (NotFoundException e) {
-                    System.out.println("Записей еще нет ".concat(e.getMessage()));
-                }
+                request.setAttribute("meals",
+                        mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

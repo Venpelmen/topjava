@@ -34,6 +34,10 @@ public class MealsUtil {
         return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalDate(), start, end));
     }
 
+    public static List<Meal> getFiltered(Collection<Meal> meals, LocalDateTime start, LocalDateTime end) {
+        return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime(), start, end));
+    }
+
     public static List<Meal> getFiltered(Collection<Meal> meals, LocalTime start, LocalTime end) {
         return getFilteredMeal(meals, meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalTime(), start, end));
     }

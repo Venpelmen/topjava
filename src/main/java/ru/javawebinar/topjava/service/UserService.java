@@ -39,7 +39,6 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        //Todo здесь должно быть как-то иначе
         return new ArrayList<>(repository.getAll());
     }
 

@@ -6,8 +6,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        Map<Integer, Meal> mealMap = repository.getOrDefault(userId,new ConcurrentHashMap<>());
+        Map<Integer, Meal> mealMap = repository.getOrDefault(userId, new ConcurrentHashMap<>());
         return mealMap.remove(id) != null;
     }
 
@@ -51,15 +51,21 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         Map<Integer, Meal> repositoryOrMap = repository.getOrDefault(userId, new ConcurrentHashMap<>());
-        return  repositoryOrMap.values().stream().
+        return repositoryOrMap.values().stream().
                 sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
     }
 
-
+    @Override
     public Collection<Meal> getAllWithFiltered(int userId, LocalDate start, LocalDate end) {
         return MealsUtil.getFiltered(getAll(userId), start, end);
     }
 
+    @Override
+    public Collection<Meal> getAllWithFiltered(int userId, LocalDateTime start, LocalDateTime end) {
+        return MealsUtil.getFiltered(getAll(userId), start, end);
+    }
+
+    @Override
     public Collection<Meal> getAllWithFiltered(int userId, LocalTime start, LocalTime end) {
         return MealsUtil.getFiltered(getAll(userId), start, end);
     }
