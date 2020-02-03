@@ -38,10 +38,10 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id",userId)
+                .addValue("id", meal.getId())
                 .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
-                .addValue("calories", meal.getCalories())
+                .addValue("calories", meal.getCalories());
 
         if (meal.isNew()) {
             Number newKey = insertMeal.executeAndReturnKey(map);
@@ -66,7 +66,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM meals order by date_time DESC", ROW_MAPPER);
     }
 
     @Override
