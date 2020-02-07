@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,11 +41,14 @@ public class JdbcMealRepository implements MealRepository {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("date_time", meal.getDateTime())
+                .addValue("user_id", userId, Types.INTEGER)
                 .addValue("description", meal.getDescription())
-                .addValue("calories", meal.getCalories())
-                .addValue("user_id", userId);
+                .addValue("calories", meal.getCalories(), Types.INTEGER);
 
         if (meal.isNew()) {
+            //Работает
+            jdbcTemplate.update("INSERT INTO meals(date_time,user_id,description,calories) VALUES (?, ?, ?, ?)", meal.getDateTime(), userId, meal.getDescription(), meal.getCalories());
+            //Неа
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
