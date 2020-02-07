@@ -23,6 +23,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
         "classpath:spring/spring-app-test.xml",
         "classpath:spring/spring-db.xml"
 })
+
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class UserServiceTest {
@@ -67,7 +68,7 @@ public class UserServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void getNotFound() throws Exception {
+    public void getNotFound() throws Exception{
         service.get(1);
     }
 

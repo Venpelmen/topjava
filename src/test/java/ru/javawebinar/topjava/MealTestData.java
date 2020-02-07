@@ -16,16 +16,22 @@ public class MealTestData {
     public static final int  NOT_PRESENT_MEAL = 1;
 
 
-    public static List<Meal> meals = new ArrayList<Meal>() {
-        {
-            add(new Meal(100007,LocalDateTime.of(2015, Month.MAY, 31, 11, 0), "", 510));
-            add(new Meal(100006,LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "", 500));
-            add(new Meal(100005,LocalDateTime.of(2015, Month.MAY, 31, 9, 0), "", 1000));
-            add(new Meal(100004,LocalDateTime.of(2015, Month.MAY, 30, 11, 0), "", 500));
-            add(new Meal(100003,LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "", 1000));
-            add(new Meal(100002,LocalDateTime.of(2015, Month.MAY, 30, 9, 0), "", 500));
-        }
-    };
+    public static List<Meal> meals;
+
+
+    public static void regenerateTestData() {
+        meals = new ArrayList<Meal>() {
+            {
+                add(new Meal(100007, LocalDateTime.of(2015, Month.MAY, 31, 11, 30), "Тортик", 510));
+                add(new Meal(100006, LocalDateTime.of(2015, Month.MAY, 31, 10, 30), "Тортик", 500));
+                add(new Meal(100005, LocalDateTime.of(2015, Month.MAY, 31, 9, 30), "Тортик", 1000));
+                add(new Meal(100004, LocalDateTime.of(2015, Month.MAY, 30, 11, 30), "Тортик", 500));
+                add(new Meal(100003, LocalDateTime.of(2015, Month.MAY, 30, 10, 30), "Тортик", 1000));
+                add(new Meal(100002, LocalDateTime.of(2015, Month.MAY, 30, 9, 30), "Тортик", 500));
+            }
+        };
+    }
+
 
 
     public static void assertMatch(Meal actual, Meal expected) {

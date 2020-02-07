@@ -31,6 +31,7 @@ public class JdbcMealRepository implements MealRepository {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
+        insertMeal.setSchemaName("topJava");
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
@@ -46,9 +47,6 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("calories", meal.getCalories(), Types.INTEGER);
 
         if (meal.isNew()) {
-            //Работает
-            jdbcTemplate.update("INSERT INTO meals(date_time,user_id,description,calories) VALUES (?, ?, ?, ?)", meal.getDateTime(), userId, meal.getDescription(), meal.getCalories());
-            //Неа
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
