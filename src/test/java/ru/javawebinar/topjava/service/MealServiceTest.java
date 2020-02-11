@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -22,7 +21,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 
 @ContextConfiguration({
-        "classpath:spring/spring-app-test.xml",
+        "classpath:spring/spring-app.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -38,15 +37,10 @@ public class MealServiceTest {
     private MealService service;
 
 
-    @Before
-    public void resetMealsList() {
-        regenerateTestData();
-    }
-
     @Test
     public void get() {
         Meal meal = service.get(MEAL_FIRST_ID, USER_ID);
-        assertMatch(meal, meals.get(5));
+        assertMatch(meal, FIRST_MEAL);
     }
 
     @Test(expected = NotFoundException.class)
@@ -57,10 +51,8 @@ public class MealServiceTest {
 
     @Test
     public void delete() {
-        Meal meal = service.get(MEAL_FIRST_ID, USER_ID);
         service.delete(MEAL_FIRST_ID, USER_ID);
-        meals.remove(meal);
-        assertMatch(service.getAll(USER_ID), meals);
+        assertMatch(service.getAll(USER_ID), SECOND_MEAL, THIRD_MEAL, FOURTH_MEAL, FIFTH_MEAL, SIXTH_MEAL);
     }
 
     @Test(expected = NotFoundException.class)
@@ -71,13 +63,13 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenDates() {
-        assertMatch(service.getBetweenDates(LocalDate.MIN, LocalDate.of(2015, 05, 30), USER_ID), meals.get(3), meals.get(4), meals.get(5));
+        assertMatch(service.getBetweenDates(LocalDate.MIN, LocalDate.of(2015, 5, 30), USER_ID), FIRST_MEAL, SECOND_MEAL, THIRD_MEAL);
     }
 
     @Test
     public void getAll() {
         List<Meal> dbMeals = service.getAll(USER_ID);
-        assertMatch(dbMeals, meals);
+        assertMatch(dbMeals, FIFTH_MEAL, SECOND_MEAL, THIRD_MEAL, FOURTH_MEAL, FIFTH_MEAL, SIXTH_MEAL);
     }
 
     @Test
