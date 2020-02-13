@@ -21,11 +21,11 @@ public class MealTestData {
 
 
     public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).usingDefaultComparator().isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Meal> actual, Meal... expected) {
-        assertThat(actual).usingRecursiveFieldByFieldElementComparator().contains(expected);
+        assertThat(actual).usingDefaultComparator().contains(expected);
     }
 }
 
