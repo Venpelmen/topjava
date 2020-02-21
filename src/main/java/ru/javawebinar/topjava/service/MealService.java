@@ -38,7 +38,10 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        return repository.getAll(userId);
+        //Лютый костыль, но идей нет
+        List<Meal> meals = repository.getAll(userId);
+        meals.forEach(item -> item.setUser(null));
+        return meals;
     }
 
     public void update(Meal meal, int userId) {

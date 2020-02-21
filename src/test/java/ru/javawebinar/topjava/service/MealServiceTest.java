@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -56,6 +57,7 @@ public class MealServiceTest {
     @Test
     public void get() throws Exception {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
+        actual.setUser(null);
         assertMatch(actual, ADMIN_MEAL1);
     }
 

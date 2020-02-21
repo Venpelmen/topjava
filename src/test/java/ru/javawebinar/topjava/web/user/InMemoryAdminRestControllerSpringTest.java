@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
@@ -37,7 +38,15 @@ public class InMemoryAdminRestControllerSpringTest {
         Collection<User> users = controller.getAll();
         Assert.assertEquals(1, users.size());
         Assert.assertEquals(ADMIN, users.iterator().next());
+        String a = null;
+
+        azaz(a);
     }
+
+    private void  azaz(@NOtn String a){
+        System.out.println(a);
+    }
+
 
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() throws Exception {

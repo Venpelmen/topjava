@@ -1,20 +1,25 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.GET, query = "SELECT e FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
+        @NamedQuery(name = Meal.GET_ALL, query = "SELECT e FROM Meal e WHERE e.user.id =?1 ORDER BY e.dateTime DESC")
+})
+@Entity
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time","user_id"}, name = "users_unique_email_idx" )})
 public class Meal extends AbstractBaseEntity {
-    private LocalDateTime dateTime;
 
-    private String description;
+    public static final String GET = "Meal.get";
+    public static final String DELETE = "Meal.delete";
+    public static final String GET_ALL = "Meal.getAll";
 
-    private int calories;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
 
     public Meal() {
     }
@@ -29,6 +34,20 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
         this.calories = calories;
     }
+
+    @Column(name = "date_time", nullable = false)
+    @NotNull
+    private LocalDateTime dateTime;
+
+    @Column(name = "description")
+    private String description;
+    @Column(name = "calories", nullable = false)
+    private int calories;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -70,13 +89,14 @@ public class Meal extends AbstractBaseEntity {
         this.user = user;
     }
 
+
     @Override
     public String toString() {
         return "Meal{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
+                "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
+                ", id=" + id +
                 '}';
     }
 }
