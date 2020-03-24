@@ -11,9 +11,9 @@ import java.util.List;
 
 class ExternalResourceWithTimeCalc {
 
-    static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
 
-    static List<TestResult> resultSet = new ArrayList<>();
+    private static List<TestResult> resultSet = new ArrayList<>();
 
 
     static ExternalResource externalResourceForClass = new ExternalResource() {
