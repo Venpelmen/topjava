@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,20 +9,30 @@ import java.time.LocalTime;
 @NamedQueries({
         @NamedQuery(name = Meal.GET, query = "SELECT e FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
-        @NamedQuery(name = Meal.GET_ALL, query = "SELECT e FROM Meal e WHERE e.user.id =?1 ORDER BY e.dateTime DESC")
+        @NamedQuery(name = Meal.GET_ALL, query = "SELECT e FROM Meal e WHERE e.user.id =?1 ORDER BY e.dateTime DESC"),
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT e FROM Meal e WHERE e.user.id =?1 and e.dateTime BETWEEN ?2 and  ?3 ORDER BY e.dateTime DESC")
 })
 @Entity
-@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time","user_id"}, name = "users_unique_email_idx" )})
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time", "user_id"}, name = "users_unique_email_idx")})
 public class Meal extends AbstractBaseEntity {
 
     public static final String GET = "Meal.get";
     public static final String DELETE = "Meal.delete";
     public static final String GET_ALL = "Meal.getAll";
-
+    public static final String GET_BETWEEN = "Meal.getBetween";
+    @Column(name = "date_time", nullable = false)
+    @NotNull
+    private LocalDateTime dateTime;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "calories", nullable = false)
+    private int calories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Meal() {
     }
-
     public Meal(LocalDateTime dateTime, String description, int calories) {
         this(null, dateTime, description, calories);
     }
@@ -35,30 +44,28 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
-    @Column(name = "date_time", nullable = false)
-    @NotNull
-    private LocalDateTime dateTime;
-
-    @Column(name = "description")
-    private String description;
-    @Column(name = "calories", nullable = false)
-    private int calories;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public int getCalories() {
         return calories;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 
     public LocalDate getDate() {
@@ -67,18 +74,6 @@ public class Meal extends AbstractBaseEntity {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCalories(int calories) {
-        this.calories = calories;
     }
 
     public User getUser() {

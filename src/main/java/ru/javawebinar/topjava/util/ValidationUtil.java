@@ -6,6 +6,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
 
+    public final static String NOT_FOUND_ERROR_TEXT = "Not found entity with ";
+    public final static String WITH_ID = "id=";
     private ValidationUtil() {
     }
 
@@ -14,7 +16,7 @@ public class ValidationUtil {
     }
 
     public static void checkNotFoundWithId(boolean found, int id) {
-        checkNotFound(found, "id=" + id);
+        checkNotFound(found, WITH_ID + id);
     }
 
     public static <T> T checkNotFound(T object, String msg) {
@@ -24,7 +26,7 @@ public class ValidationUtil {
 
     public static void checkNotFound(boolean found, String msg) {
         if (!found) {
-            throw new NotFoundException("Not found entity with " + msg);
+            throw new NotFoundException(NOT_FOUND_ERROR_TEXT + msg);
         }
     }
 
