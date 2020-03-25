@@ -47,8 +47,6 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
-    //Почему-то не открывает транзакцию аннотированную в классе...
     public Meal get(int id, int userId) {
         TypedQuery<Meal> typedQuery = em.createNamedQuery(Meal.GET, Meal.class).setParameter(1, id).setParameter(2, userId);
         return DataAccessUtils.singleResult(typedQuery.getResultList());
@@ -61,7 +59,6 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return em.createNamedQuery(Meal.GET_BETWEEN, Meal.class)
                 .setParameter(1, userId).setParameter(2, startDate).setParameter(3, endDate)

@@ -107,6 +107,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
+        updated.setUser(null);
         Meal dbMeal = service.get(MEAL1_ID, USER_ID);
         dbMeal.setUser(null);
         assertMatch(dbMeal, updated);
