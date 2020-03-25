@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.GET, query = "SELECT e FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal e WHERE e.id =?1 and e.user.id =?2"),
-        @NamedQuery(name = Meal.GET_ALL, query = "SELECT e FROM Meal e WHERE e.user.id =?1 ORDER BY e.dateTime DESC"),
-        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT e FROM Meal e WHERE e.user.id =?1 and e.dateTime BETWEEN ?2 and  ?3 ORDER BY e.dateTime DESC")
+        @NamedQuery(name = Meal.GET, query = "SELECT meal FROM Meal meal WHERE meal.id =?1 and meal.user.id =?2"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal meal WHERE meal.id =?1 and meal.user.id =?2"),
+        @NamedQuery(name = Meal.GET_ALL, query = "SELECT meal FROM Meal meal WHERE meal.user.id =?1 ORDER BY meal.dateTime DESC"),
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT meal FROM Meal meal WHERE meal.user.id =?1 and meal.dateTime BETWEEN ?2 and  ?3 ORDER BY meal.dateTime DESC")
 })
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time", "user_id"}, name = "users_unique_email_idx")})
