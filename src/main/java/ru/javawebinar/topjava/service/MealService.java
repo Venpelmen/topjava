@@ -38,9 +38,7 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        //Лютый костыль, но идей нет
-        List<Meal> meals = repository.getAll(userId);
-        return meals;
+        return repository.getAll(userId);
     }
 
     public void update(Meal meal, int userId) {
