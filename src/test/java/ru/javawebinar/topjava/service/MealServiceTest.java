@@ -1,12 +1,16 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.ClassRule;
+import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.ExternalResource;
+import org.junit.rules.Stopwatch;
 import org.junit.rules.TestName;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,7 +21,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -33,10 +39,45 @@ import static ru.javawebinar.topjava.util.ValidationUtil.WITH_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
-    @ClassRule
-    public static final ExternalResource externalResourceForClass = ExternalResourceWithTimeCalc.externalResourceForClass;
+    private static List<TestResult> resultSet = new ArrayList<>();
+
     @Rule
-    public final ExternalResource externalResource = new ExternalResourceWithTimeCalc().externalResourceForMethod;
+    public Stopwatch stopwatch = new Stopwatch() {
+        private final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+
+        private void logInfo(Description description, String status, long nanos) {
+            String testName = description.getMethodName();
+            logger.info(String.format("Test %s %s, spent ________________________%d microseconds",
+                    testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+        }
+
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
+            resultSet.add(new TestResult(description.getMethodName(),nanos));
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed", nanos);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
+        }
+    };
+
+    @AfterClass
+    public static void printResults() {
+        resultSet.forEach(item -> System.out.println(item.toString()));
+    }
+
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
     @Rule
@@ -115,7 +156,6 @@ public class MealServiceTest {
 
     @Test
     public void updateNotFound() {
-
         thrown.expect(NotFoundException.class);
         thrown.expectMessage(NOT_FOUND_ERROR_TEXT + WITH_ID + NOT_PRESENT_MEAL_ID);
         service.update(getNotPresentMealForUpdate(), ADMIN_ID);
