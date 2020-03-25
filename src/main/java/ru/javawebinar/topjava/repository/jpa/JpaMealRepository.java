@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.repository.jpa;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +30,13 @@ public class JpaMealRepository implements MealRepository {
             em.persist(meal);
             return meal;
         } else {
-            Meal existingMealOrNull = this.get(meal.getId(), userId);
-            if (Objects.nonNull(existingMealOrNull)) {
-                BeanUtils.copyProperties(meal, existingMealOrNull);
-                existingMealOrNull.setUser(em.find(User.class, userId));
+            if (Objects.nonNull(get(meal.getId(), userId))) {
+                meal.setUser(em.getReference(User.class, userId));
+                em.merge(meal);
+            } else {
+                meal = null;
             }
-            return existingMealOrNull;
+            return meal;
         }
     }
 
