@@ -12,16 +12,7 @@ import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
-public class JpaUserRepository extends JpaAbstractRepository implements UserRepository {
-
-/*
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    private Session openSession() {
-        return sessionFactory.getCurrentSession();
-    }
-*/
+public class JpaUserRepository implements UserRepository {
 
     @PersistenceContext
     private EntityManager em;
