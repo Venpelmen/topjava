@@ -17,11 +17,11 @@ public class Profiles {
     public static String[] getActiveDbProfileAndRepoIml() {
         try {
             Class.forName("org.postgresql.Driver");
-            return new String[]{POSTGRES_DB,DATAJPA};
+            return new String[]{POSTGRES_DB, REPOSITORY_IMPLEMENTATION};
         } catch (ClassNotFoundException ex) {
             try {
                 Class.forName("org.hsqldb.jdbcDriver");
-                return new String[]{HSQL_DB,DATAJPA};
+                return new String[]{HSQL_DB, REPOSITORY_IMPLEMENTATION};
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException("Could not find DB driver");
             }
