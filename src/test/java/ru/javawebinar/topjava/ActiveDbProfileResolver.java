@@ -11,8 +11,8 @@ public class ActiveDbProfileResolver implements ActiveProfilesResolver {
 
     @Override
     public String[] resolve(Class<?> aClass) {
-        String[] dbAndRepoImpl = Profiles.getActiveDbProfileAndRepoIml();
-        log.info("______________________Db is " + dbAndRepoImpl[0] + " repository implementation is " + dbAndRepoImpl[1]+"______________________");
-        return dbAndRepoImpl;
+        String dbAndRepoImpl = Profiles.getActiveDbProfile();
+        log.info("______________________Db is " + dbAndRepoImpl + "______________________");
+        return new String[]{dbAndRepoImpl};
     }
 }
