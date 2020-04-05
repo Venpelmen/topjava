@@ -21,10 +21,10 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public abstract class MealServiceTest extends BaseTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Autowired
-    private MealRepository repository;
+    protected MealRepository repository;
 
     @Test
     public void delete() throws Exception {

@@ -14,6 +14,13 @@ public interface UserRepository {
     // null if not found
     User get(int id);
 
+    /**
+     * @return User with meal (Use only in DATAJPA implementation)
+     */
+    default User getWithMeal(int id){
+      return null;
+    }
+
     // null if not found
     User getByEmail(String email);
 

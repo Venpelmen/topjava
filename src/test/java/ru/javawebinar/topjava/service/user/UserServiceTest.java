@@ -24,7 +24,7 @@ public abstract class UserServiceTest extends BaseTest {
     private UserService service;
 
     @Autowired
-    private UserRepository repository;
+    protected UserRepository repository;
 
     @Autowired
     private CacheManager cacheManager;

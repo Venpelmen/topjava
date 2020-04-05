@@ -20,4 +20,11 @@ public interface MealRepository {
 
     // ORDERED dateTime desc
     List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+
+    /**
+     * @return Meal with user (Use only in DATAJPA implementation)
+     */
+    default Meal getWithUser(int id, int iserId) {
+        return null;
+    }
 }
