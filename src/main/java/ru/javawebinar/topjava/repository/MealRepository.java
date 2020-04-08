@@ -24,7 +24,7 @@ public interface MealRepository {
     /**
      * @return Meal with user (Use only in DATAJPA implementation)
      */
-    default Meal getWithUser(int id, int iserId) {
-        return null;
+    default Meal getWithUser(int id, int userId) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -18,7 +18,8 @@ public interface UserRepository {
      * @return User with meal (Use only in DATAJPA implementation)
      */
     default User getWithMeal(int id){
-      return null;
+        throw new UnsupportedOperationException();
+
     }
 
     // null if not found

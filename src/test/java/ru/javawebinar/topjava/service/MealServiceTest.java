@@ -1,12 +1,10 @@
-package ru.javawebinar.topjava.service.meal;
+package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.service.BaseTest;
-import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -24,7 +22,7 @@ public abstract class MealServiceTest extends BaseTest {
     protected MealService service;
 
     @Autowired
-    protected MealRepository repository;
+    private MealRepository repository;
 
     @Test
     public void delete() throws Exception {
@@ -62,7 +60,9 @@ public abstract class MealServiceTest extends BaseTest {
     @Test
     public void getNotFound() throws Exception {
         Assert.assertThrows(NotFoundException.class,
-                () -> service.get(MEAL1_ID, ADMIN_ID));
+                () -> {
+                    service.get(MEAL1_ID, ADMIN_ID);
+                });
     }
 
     @Test

@@ -17,7 +17,9 @@ public class MealTestData {
     public static final int ADMIN_MEAL_ID = START_SEQ + 9;
 
     public static final Meal MEAL1 = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
-    public static final Meal MEAL1_WITH_USER = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500,USER);
+    public static final Meal MEAL1_WITH_USER = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500){
+        {setUser(USER);}
+    };
     public static final Meal MEAL2 = new Meal(MEAL1_ID + 1, of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
     public static final Meal MEAL3 = new Meal(MEAL1_ID + 2, of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
     public static final Meal MEAL4 = new Meal(MEAL1_ID + 3, of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100);

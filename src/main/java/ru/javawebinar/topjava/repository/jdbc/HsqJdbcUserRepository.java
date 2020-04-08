@@ -5,15 +5,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
-import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 @Profile(Profiles.HSQL_DB)
 @Repository
-public class HsqJdbcUserRepository extends AbstractJdbcMealRepository<Date> implements MealRepository {
+public class HsqJdbcUserRepository extends AbstractJdbcMealRepository<Timestamp> {
 
 
     public HsqJdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -21,8 +19,8 @@ public class HsqJdbcUserRepository extends AbstractJdbcMealRepository<Date> impl
     }
 
     @Override
-    Date localDateOrDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    Timestamp localDateOrDate(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
     }
 
 }

@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service.user;
+package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,8 +9,6 @@ import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
-import ru.javawebinar.topjava.service.BaseTest;
-import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
@@ -21,10 +19,10 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public abstract class UserServiceTest extends BaseTest {
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
-    protected UserRepository repository;
+    private UserRepository repository;
 
     @Autowired
     private CacheManager cacheManager;
@@ -44,9 +42,11 @@ public abstract class UserServiceTest extends BaseTest {
         USER_MATCHER.assertMatch(service.get(newId), newUser);
     }
 
-    @Test(expected = DataAccessException.class)
     public void duplicateMailCreate() throws Exception {
-        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+        Assert.assertThrows(DataAccessException.class,
+                () -> service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER)));
+
+
     }
 
     public void delete() throws Exception {
@@ -54,9 +54,9 @@ public abstract class UserServiceTest extends BaseTest {
         Assert.assertNull(repository.get(USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+
     public void deletedNotFound() throws Exception {
-        service.delete(1);
+        Assert.assertThrows(NotFoundException.class, () -> service.delete(1));
     }
 
     @Test
@@ -65,9 +65,8 @@ public abstract class UserServiceTest extends BaseTest {
         USER_MATCHER.assertMatch(user, USER);
     }
 
-    @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
-        service.get(1);
+        Assert.assertThrows(NotFoundException.class, () -> service.get(1));
     }
 
     @Test
